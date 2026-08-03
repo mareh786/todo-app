@@ -10,7 +10,7 @@ def show_menu():
 
 def add_task():
     task = input("Enter the task: ")
-    tasks.append(task)
+    tasks.append({"task": task, "done": False})
     print("Task added successfully!")
 
 def view_tasks():
@@ -19,7 +19,8 @@ def view_tasks():
     else:
         print("Tasks:")
         for i, task in enumerate(tasks, start=1):
-            print(f"{i}. {task}")
+            status = "✅" if task["done"] else "❌"
+            print(f"{i}. {task['task']}{status}")
 
 def mark_done():
     view_tasks()
@@ -27,7 +28,7 @@ def mark_done():
         try:
             task_num = int(input("Enter the task number to mark as done: "))
             if 1 <= task_num <= len(tasks):
-                tasks[task_num - 1] += " (Done)"
+                tasks[task_num - 1]["done"] = True
                 print("Task marked as done.")
             else:
                 print("Invalid task number.")
