@@ -20,7 +20,9 @@ A simple command-line Todo application built with Python. This project demonstra
 todo-app/
 │
 ├── todo.py
+├── test_app.py
 └── README.md
+
 ```
 
 ---
@@ -44,7 +46,7 @@ python --version
 Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/todo-app.git
+git clone https://github.com/mareh786/todo-app.git
 ```
 
 Move into the project directory
