@@ -20,7 +20,9 @@ A simple command-line Todo application built with Python. This project demonstra
 todo-app/
 │
 ├── todo.py
+├── test_app.py
 └── README.md
+
 ```
 
 ---
