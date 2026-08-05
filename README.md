@@ -1,16 +1,17 @@
-# 📝 Python Todo App
+# 📝 FastAPI Todo App
 
-A simple command-line Todo application built with Python. This project demonstrates the fundamentals of Python programming including functions, lists, loops, conditional statements, exception handling, and user interaction.
+A full-featured Todo web API built with FastAPI and SQLite.
 
 ---
 
 ## 📌 Features
 
-- ➕ Add new tasks
-- 📋 View all tasks
+- ➕ Create tasks
+- 📋 List tasks
 - ✅ Mark tasks as completed
 - 🗑️ Delete tasks
-- 🚪 Exit the application
+- 🧩 Persistent SQLite storage
+- 🐳 Docker-ready deployment
 
 ---
 
@@ -19,10 +20,16 @@ A simple command-line Todo application built with Python. This project demonstra
 ```
 todo-app/
 │
-├── todo.py
+├── app.py
+├── database.py
+├── models.py
+├── schemas.py
+├── requirements.txt
+├── Dockerfile
+├── .dockerignore
 ├── test_app.py
+├── test_web_app.py
 └── README.md
-
 ```
 
 ---
@@ -31,155 +38,79 @@ todo-app/
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.11+ or 3.12+
 
-Check your Python version:
+Verify your Python version:
 
 ```bash
 python --version
 ```
 
----
-
-## ▶️ Run the Application
-
-Clone the repository
+### Install dependencies
 
 ```bash
-git clone https://github.com/mareh786/todo-app.git
+pip install -r requirements.txt
 ```
 
-Move into the project directory
+---
+
+## ▶️ Run the API Locally
+
+Start the server with Uvicorn:
 
 ```bash
-cd todo-app
+uvicorn app:app --reload
 ```
 
-Run
+Open the interactive API docs:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## 📦 Docker
+
+Build the container:
 
 ```bash
-python todo.py
+docker build -t todo-app .
+```
+
+Run the container:
+
+```bash
+docker run -p 8000:8000 todo-app
+```
+
+Then visit:
+
+```text
+http://127.0.0.1:8000/docs
 ```
 
 ---
 
-## 📷 Sample Output
+## 🧪 Tests
 
-```
-Todo App Menu:
+Run the unit tests:
 
-1. Add Task
-2. View Tasks
-3. Mark Task as Done
-4. Delete Task
-5. Exit
-
-Enter your choice:
+```bash
+python -m unittest discover -v
 ```
 
 ---
 
-## 📖 How It Works
+## 🛠 API Endpoints
 
-### Add Task
-
-Stores the entered task inside a Python list.
-
-Example
-
-```
-Buy Milk
-```
-
----
-
-### View Tasks
-
-Displays all tasks with numbering.
-
-Example
-
-```
-1. Buy Milk
-2. Complete Python Assignment
-```
-
----
-
-### Mark Task as Done
-
-Adds the text
-
-```
-(Done)
-```
-
-to the selected task.
-
-Example
-
-```
-1. Buy Milk (Done)
-```
-
----
-
-### Delete Task
-
-Removes the selected task from the list.
-
----
-
-## 🛠 Technologies Used
-
-- Python 3
-- Lists
-- Functions
-- Loops
-- Exception Handling
-
----
-
-## ⚠ Current Limitations
-
-- Data is stored only in memory.
-- Tasks disappear after closing the program.
-- No GUI.
-- No database.
-- Duplicate tasks are allowed.
-
----
-
-## 🚀 Future Enhancements
-
-- Save tasks to a JSON file
-- Save tasks in SQLite
-- Add due dates
-- Task priorities
-- Categories
-- Search tasks
-- Filter completed tasks
-- User authentication
-- Dark mode GUI
-- Notifications
-- Web application using Flask/FastAPI
-- Desktop application using Tkinter or CustomTkinter
-
----
-
-## 📚 Learning Outcomes
-
-This project helped practice:
-
-- Python Functions
-- Lists
-- User Input
-- While Loops
-- Exception Handling
-- Code Organization
+- `GET /tasks` — list all tasks
+- `POST /tasks` — create a task
+- `PUT /tasks/{task_id}/done` — mark a task done
+- `DELETE /tasks/{task_id}` — delete a task
 
 ---
 
 ## 📄 License
 
-This project is open-source and available under the MIT License.
+This project is released under the MIT License.

@@ -1,56 +1,48 @@
-import io
 import unittest
-from contextlib import redirect_stdout
-from unittest.mock import patch
+from fastapi.testclient import TestClient
 
+from database import SessionLocal
 import app
+import models
 
 
-class TestTodoApp(unittest.TestCase):
+class TestTodoAPI(unittest.TestCase):
     def setUp(self) -> None:
-        app.tasks.clear()
+        db = SessionLocal()
+        db.query(models.Task).delete()
+        db.commit()
+        db.close()
+        self.client = TestClient(app.app)
 
-    def test_add_task_appends_new_task(self):
-        with patch("builtins.input", return_value="Buy milk"):
-            with io.StringIO() as buf, redirect_stdout(buf):
-                app.add_task()
-                output = buf.getvalue()
+    def test_get_tasks_returns_empty_list(self):
+        response = self.client.get("/tasks")
 
-        self.assertEqual(len(app.tasks), 1)
-        self.assertEqual(app.tasks[0]["task"], "Buy milk")
-        self.assertFalse(app.tasks[0]["done"])
-        self.assertIn("Task added successfully!", output)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
 
-    def test_view_tasks_prints_no_tasks_message(self):
-        with io.StringIO() as buf, redirect_stdout(buf):
-            app.view_tasks()
-            output = buf.getvalue()
+    def test_create_task_returns_created_task(self):
+        response = self.client.post("/tasks", json={"task": "Buy milk"})
 
-        self.assertIn("No tasks to display.", output)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json(), {"id": 1, "task": "Buy milk", "done": False})
 
-    def test_mark_done_sets_task_status_true(self):
-        app.tasks.append({"task": "Buy milk", "done": False})
-        with patch("builtins.input", return_value="1"):
-            with io.StringIO() as buf, redirect_stdout(buf):
-                app.mark_done()
-                output = buf.getvalue()
+    def test_mark_task_done_updates_task(self):
+        self.client.post("/tasks", json={"task": "Buy milk"})
 
-        self.assertTrue(app.tasks[0]["done"])
-        self.assertIn("Task marked as done.", output)
+        response = self.client.put("/tasks/1/done")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"id": 1, "task": "Buy milk", "done": True})
 
     def test_delete_task_removes_selected_task(self):
-        app.tasks.extend([
-            {"task": "Buy milk", "done": False},
-            {"task": "Read book", "done": False},
-        ])
-        with patch("builtins.input", return_value="2"):
-            with io.StringIO() as buf, redirect_stdout(buf):
-                app.delete_task()
-                output = buf.getvalue()
+        self.client.post("/tasks", json={"task": "Buy milk"})
+        self.client.post("/tasks", json={"task": "Read book"})
 
-        self.assertEqual(len(app.tasks), 1)
-        self.assertEqual(app.tasks[0]["task"], "Buy milk")
-        self.assertIn("Task deleted.", output)
+        response = self.client.delete("/tasks/2")
+
+        self.assertEqual(response.status_code, 204)
+        response = self.client.get("/tasks")
+        self.assertEqual(response.json(), [{"id": 1, "task": "Buy milk", "done": False}])
 
 
 if __name__ == "__main__":
