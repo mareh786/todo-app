@@ -4,6 +4,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    matrix:
-      python-version: ["pypy3.10", "3.9", "3.10", "3.11", "3.12", "3.13"]
+      matrix:
+        python-version: ["pypy3.10", "3.9", "3.10", "3.11", "3.12", "3.13"]
     
