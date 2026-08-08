@@ -59,7 +59,7 @@ pip install -r requirements.txt
 Start the server with Uvicorn:
 
 ```bash
-uvicorn app:app --reload
+uvicorn web_app:app --reload
 ```
 
 Open the interactive API docs:
