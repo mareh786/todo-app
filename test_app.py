@@ -2,7 +2,7 @@ import unittest
 from fastapi.testclient import TestClient
 
 from database import SessionLocal
-import app
+import web_app
 import models
 
 
@@ -12,7 +12,7 @@ class TestTodoAPI(unittest.TestCase):
         db.query(models.Task).delete()
         db.commit()
         db.close()
-        self.client = TestClient(app.app)
+        self.client = TestClient(web_app.app)
 
     def test_get_tasks_returns_empty_list(self):
         response = self.client.get("/tasks")
